@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kesaru Hasun - Portfolio</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #0C0C0C;
+      color: #FFFFFF;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #4DA6FF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container for sections */
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Header / Hero Section */
+    header {
+      background: #0B0B0B;
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-tagline {
+      font-style: italic;
+      color: #CCC;
+    }
+
+    /* About Section */
+    #about {
+      background: #121212;
+      margin-top: -2rem; /* Slight overlap effect if desired */
+      padding: 3rem 1rem;
+      text-align: center;
+      border-top: 2px solid #4DA6FF;
+    }
+
+    #about h2 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    #about p {
+      max-width: 700px;
+      margin: 0 auto 1rem auto;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    /* Skills Section */
+    #skills {
+      background: #0E0E0E;
+      padding: 3rem 1rem;
+      text-align: center;
+      border-top: 2px solid #4DA6FF;
+    }
+
+    #skills h2 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .skills-list .card {
+      background: #1E1E1E;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+      color: #4DA6FF;
+    }
+
+    /* Blog Section */
+    #blog {
+      background: #121212;
+      padding: 3rem 1rem;
+      text-align: center;
+      border-top: 2px solid #4DA6FF;
+    }
+
+    #blog h2 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    #blog p {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      color: #CCC;
+    }
+
+    /* Contact Section */
+    #contact {
+      background: #0E0E0E;
+      padding: 3rem 1rem;
+      text-align: center;
+      border-top: 2px solid #4DA6FF;
+    }
+
+    #contact h2 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    #contact .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    #contact .social-links a {
+      background: #1E1E1E;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+
+    #contact p {
+      color: #CCC;
+      max-width: 700px;
+      margin: 0 auto;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem 0;
+      background: #0C0C0C;
+      border-top: 1px solid #333;
+    }
+    footer p {
+      font-size: 0.9rem;
+      color: #888;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER / HERO SECTION -->
+  <header>
+    <h1>Kesaru Hasun</h1>
+    <p class="hero-tagline">Brainy is the new sexy</p>
+    <p>IT Support Executive @ Register.lk | Server Management & AI Learner</p>
+  </header>
+
+  <!-- ABOUT SECTION -->
+  <section id="about">
+    <div class="container">
+      <h2>About Me</h2>
+      <p>
+        I’m Kesaru, an IT Support Executive at <strong>Register.lk</strong> 
+        hailing from Meegoda, Sri Lanka. I completed my primary education at 
+        Army School Panagoda and secondary education at MRC Homagama, 
+        graduating in the Mathematics stream. 
+      </p>
+      <p>
+        Currently, I am pursuing my passion for Artificial Intelligence at SLIIT.
+        I have a keen interest in Networking, Server Management, Automation, 
+        and Machine Learning. I’m also fascinated by Physics, Astrophysics, 
+        Science, Mathematics, and Data Science. Problem-solving and resilience 
+        are my strong suits, and I love exploring new ideas and technologies.
+      </p>
+    </div>
+  </section>
+
+  <!-- SKILLS SECTION -->
+  <section id="skills">
+    <div class="container">
+      <h2>Skills & Expertise</h2>
+      <div class="skills-list">
+        <div class="card">
+          <h3>Hard Skills</h3>
+          <p>Python Programming, Server Management, Networking, Cybersecurity Basics, Automation</p>
+        </div>
+        <div class="card">
+          <h3>Soft Skills</h3>
+          <p>Problem-Solving, Resilience, Quick Learning, Strong General Knowledge</p>
+        </div>
+        <div class="card">
+          <h3>Fun Fact</h3>
+          <p>
+            I served as the Quiz Master of my school’s quiz club and have experience 
+            comparing (emceeing) school events. I also write blog posts for 
+            <strong>Register.lk</strong> to share my knowledge in tech.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG SECTION -->
+  <section id="blog">
+    <div class="container">
+      <h2>Blog</h2>
+      <p>
+        I frequently write blog posts on tech, AI, and networking. 
+        Stay tuned for updates and links to my latest articles!
+      </p>
+      <!-- Future plan: Insert blog cards or embedded posts here -->
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact">
+    <div class="container">
+      <h2>Let’s Connect</h2>
+      <div class="social-links">
+        <a href="https://www.instagram.com/kesaruhasun" target="_blank">Instagram</a>
+        <a href="https://twitter.com/kesaruhasun" target="_blank">Twitter</a>
+      </div>
+      <p>
+        The best way to reach me is via WhatsApp. 
+        Drop me a message on social media to get my number!
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2024 Kesaru Hasun. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
