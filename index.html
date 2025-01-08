@@ -2,231 +2,386 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kesaru Hasun - Portfolio</title>
+  <meta name="description" content="Kesaru Hasun - Personal Portfolio" />
+  <meta name="keywords" content="IT Support, Networking, AI, Portfolio" />
+  <meta name="author" content="Kesaru Hasun" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kesaru Hasun | Portfolio</title>
   <style>
-    /* Global Styles */
-    body {
+    /* 
+    ===========================
+    GLOBAL STYLES
+    ===========================
+    */
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html, body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #0C0C0C;
+      background: #0C0C0C; /* Dark background */
       color: #FFFFFF;
-      line-height: 1.6;
+      scroll-behavior: smooth;
     }
 
     a {
-      color: #4DA6FF;
       text-decoration: none;
+      color: #4DA6FF; /* Accent color */
     }
 
     a:hover {
       text-decoration: underline;
     }
 
-    /* Container for sections */
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
+    h1, h2, h3 {
+      margin: 0;
     }
 
-    /* Header / Hero Section */
-    header {
-      background: #0B0B0B;
+    p {
+      line-height: 1.7;
+    }
+
+    /* Utility classes */
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      border-radius: 4px;
+      background-color: #4DA6FF;
+      color: #0C0C0C;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #3793ff; /* Slightly darker on hover */
+    }
+
+    /* Responsive Helper (for columns) */
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    /* 
+    ===========================
+    NAVBAR
+    ===========================
+    */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(12, 12, 12, 0.9);
+      backdrop-filter: blur(6px);
+      z-index: 999; /* Keep nav on top */
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #4DA6FF;
+    }
+
+    nav .menu {
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav .menu a {
+      color: #FFFFFF;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav .menu a:hover {
+      color: #4DA6FF;
+    }
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.2rem;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #FFF;
+    }
+
+    /* Hide the nav links initially on mobile */
+    @media (max-width: 768px) {
+      nav .menu {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background: #0C0C0C;
+        width: 200px;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: -2px 2px 8px rgba(0,0,0,0.5);
+        opacity: 0.95;
+      }
+
+      nav .menu.show-menu {
+        transform: translateX(0%);
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+    }
+
+    /* 
+    ===========================
+    HERO SECTION
+    ===========================
+    */
+    #hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.3),
+          rgba(0,0,0,0.7)
+        ),
+        url("https://images.unsplash.com/photo-1554528758-917e0fcaa064?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #fff;
+      padding: 0 1rem;
+    }
+
+    #hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
+
+    #hero p {
+      font-size: 1.3rem;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
+    }
+
+    #hero .btn {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      #hero h1 {
+        font-size: 2.2rem;
+      }
+      #hero p {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* 
+    ===========================
+    ABOUT SECTION
+    ===========================
+    */
+    #about {
+      background: #121212;
       padding: 4rem 0;
       text-align: center;
     }
 
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    header p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .hero-tagline {
-      font-style: italic;
-      color: #CCC;
-    }
-
-    /* About Section */
-    #about {
-      background: #121212;
-      margin-top: -2rem; /* Slight overlap effect if desired */
-      padding: 3rem 1rem;
-      text-align: center;
-      border-top: 2px solid #4DA6FF;
-    }
-
     #about h2 {
-      margin-bottom: 1.5rem;
       font-size: 2rem;
-    }
-
-    #about p {
-      max-width: 700px;
-      margin: 0 auto 1rem auto;
-      font-size: 1rem;
-      line-height: 1.8;
-    }
-
-    /* Skills Section */
-    #skills {
-      background: #0E0E0E;
-      padding: 3rem 1rem;
-      text-align: center;
-      border-top: 2px solid #4DA6FF;
-    }
-
-    #skills h2 {
-      margin-bottom: 1.5rem;
-      font-size: 2rem;
-    }
-
-    .skills-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .skills-list .card {
-      background: #1E1E1E;
-      padding: 1rem;
-      border-radius: 8px;
-    }
-
-    .card h3 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 2rem;
       color: #4DA6FF;
     }
 
-    /* Blog Section */
+    #about p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* 
+    ===========================
+    BLOG SECTION
+    ===========================
+    */
     #blog {
-      background: #121212;
-      padding: 3rem 1rem;
+      background: #0E0E0E;
+      padding: 4rem 0;
       text-align: center;
-      border-top: 2px solid #4DA6FF;
     }
 
     #blog h2 {
-      margin-bottom: 1rem;
       font-size: 2rem;
-    }
-
-    #blog p {
-      max-width: 700px;
-      margin: 0 auto;
-      font-size: 1rem;
       margin-bottom: 2rem;
-      color: #CCC;
+      color: #4DA6FF;
     }
 
-    /* Contact Section */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .blog-post {
+      background: #1E1E1E;
+      border-radius: 6px;
+      padding: 1.5rem;
+      text-align: left;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .blog-post:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .blog-post h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      color: #4DA6FF;
+    }
+
+    .blog-post p {
+      font-size: 0.95rem;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    /* 
+    ===========================
+    CONTACT SECTION
+    ===========================
+    */
     #contact {
-      background: #0E0E0E;
-      padding: 3rem 1rem;
+      background: #121212;
+      padding: 4rem 0;
       text-align: center;
-      border-top: 2px solid #4DA6FF;
     }
 
     #contact h2 {
-      margin-bottom: 1rem;
       font-size: 2rem;
-    }
-
-    #contact .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
       margin-bottom: 2rem;
-    }
-
-    #contact .social-links a {
-      background: #1E1E1E;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
+      color: #4DA6FF;
     }
 
     #contact p {
-      color: #CCC;
       max-width: 700px;
-      margin: 0 auto;
-      margin-bottom: 1rem;
-      font-size: 1rem;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.8;
+      color: #ccc;
     }
 
-    /* Footer */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-links a {
+      background: #1E1E1E;
+      padding: 0.8rem 1.2rem;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .social-links a:hover {
+      background: #2D2D2D;
+    }
+
+    /* 
+    ===========================
+    FOOTER
+    ===========================
+    */
     footer {
+      background: #0C0C0C;
       text-align: center;
       padding: 1rem 0;
-      background: #0C0C0C;
       border-top: 1px solid #333;
     }
+
     footer p {
       font-size: 0.9rem;
       color: #888;
-      margin: 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER / HERO SECTION -->
-  <header>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">KESARU HASUN</div>
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="menu" id="menu">
+      <a href="#hero">Home</a>
+      <a href="#about">About</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="hero">
     <h1>Kesaru Hasun</h1>
-    <p class="hero-tagline">Brainy is the new sexy</p>
-    <p>IT Support Executive @ Register.lk | Server Management & AI Learner</p>
-  </header>
+    <p class="tagline">
+      Brainy is the new sexy. <br>
+      IT Support Executive @ Register.lk | Server Management & AI Enthusiast
+    </p>
+    <a href="#about" class="btn">About Me</a>
+  </section>
 
   <!-- ABOUT SECTION -->
   <section id="about">
     <div class="container">
       <h2>About Me</h2>
       <p>
-        I’m Kesaru, an IT Support Executive at <strong>Register.lk</strong> 
-        hailing from Meegoda, Sri Lanka. I completed my primary education at 
-        Army School Panagoda and secondary education at MRC Homagama, 
-        graduating in the Mathematics stream. 
-      </p>
-      <p>
-        Currently, I am pursuing my passion for Artificial Intelligence at SLIIT.
-        I have a keen interest in Networking, Server Management, Automation, 
-        and Machine Learning. I’m also fascinated by Physics, Astrophysics, 
-        Science, Mathematics, and Data Science. Problem-solving and resilience 
+        I’m Kesaru Hasun, an IT Support Executive at <strong>Register.lk</strong> based in Meegoda, Sri Lanka.
+        I completed my primary education at Army School Panagoda and secondary education at MRC Homagama,
+        graduating in the Mathematics stream. Currently, I’m pursuing my passion for <em>Artificial Intelligence</em>
+        at SLIIT. I have a strong interest in <strong>Networking, Server Management, Automation</strong>,
+        and <strong>Machine Learning</strong>. My fascination extends to Physics, Astrophysics, Science,
+        Mathematics, and Data Science. <strong>Problem-solving</strong> and <strong>resilience</strong> 
         are my strong suits, and I love exploring new ideas and technologies.
       </p>
-    </div>
-  </section>
-
-  <!-- SKILLS SECTION -->
-  <section id="skills">
-    <div class="container">
-      <h2>Skills & Expertise</h2>
-      <div class="skills-list">
-        <div class="card">
-          <h3>Hard Skills</h3>
-          <p>Python Programming, Server Management, Networking, Cybersecurity Basics, Automation</p>
-        </div>
-        <div class="card">
-          <h3>Soft Skills</h3>
-          <p>Problem-Solving, Resilience, Quick Learning, Strong General Knowledge</p>
-        </div>
-        <div class="card">
-          <h3>Fun Fact</h3>
-          <p>
-            I served as the Quiz Master of my school’s quiz club and have experience 
-            comparing (emceeing) school events. I also write blog posts for 
-            <strong>Register.lk</strong> to share my knowledge in tech.
-          </p>
-        </div>
-      </div>
+      <p>
+        I also take pride in my soft skills: I was the Quiz Master of my school’s quiz club and have experience
+        comparing (emceeing) school events. I enjoy writing blog posts for <strong>Register.lk</strong> 
+        to share insights on tech and other exciting topics.
+      </p>
     </div>
   </section>
 
@@ -235,25 +390,48 @@
     <div class="container">
       <h2>Blog</h2>
       <p>
-        I frequently write blog posts on tech, AI, and networking. 
-        Stay tuned for updates and links to my latest articles!
+        Check out some of my posts on tech, AI, and networking. I'll keep adding content 
+        to give you a glimpse of the projects and ideas I'm exploring.
       </p>
-      <!-- Future plan: Insert blog cards or embedded posts here -->
+      <!-- Sample Blog Cards -->
+      <div class="blog-grid">
+        <div class="blog-post">
+          <h3>Understanding Networking Fundamentals</h3>
+          <p>
+            A beginner’s journey into how networks operate, from TCP/IP to advanced routing protocols. 
+            Learn how data travels and how servers communicate behind the scenes.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>Intro to Python Scripting</h3>
+          <p>
+            A quick crash course on using Python to automate mundane tasks. 
+            Ideal for IT support pros looking to speed up repetitive work.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>My AI Learning Path</h3>
+          <p>
+            Documenting my steps in mastering Machine Learning and AI at SLIIT, 
+            along with tips and resources I’ve found valuable.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- CONTACT SECTION -->
   <section id="contact">
     <div class="container">
-      <h2>Let’s Connect</h2>
+      <h2>Contact</h2>
+      <p>
+        Interested in chatting about AI, Networking, or potential collaborations? 
+        I'd love to connect! You can message me on social media to get my WhatsApp number.
+      </p>
       <div class="social-links">
         <a href="https://www.instagram.com/kesaruhasun" target="_blank">Instagram</a>
         <a href="https://twitter.com/kesaruhasun" target="_blank">Twitter</a>
       </div>
-      <p>
-        The best way to reach me is via WhatsApp. 
-        Drop me a message on social media to get my number!
-      </p>
     </div>
   </section>
 
@@ -262,5 +440,13 @@
     <p>© 2024 Kesaru Hasun. All rights reserved.</p>
   </footer>
 
+  <!-- JAVASCRIPT FOR MOBILE MENU TOGGLE -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
+    menuToggle.addEventListener('click', () => {
+      menu.classList.toggle('show-menu');
+    });
+  </script>
 </body>
 </html>
