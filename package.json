@@ -6,7 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"Tests will be added in future versions\" && exit 0",
+    "test:production": "./test.sh",
+    "clean": "rm -rf .next out dist",
+    "analyze": "ANALYZE=true npm run build",
+    "postbuild": "echo \"Build completed successfully\"",
+    "health-check": "curl -f http://localhost:3000/api/health || exit 1"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kesaru.me - Personal Portfolio Website
 
-## Getting Started
+A modern, automated portfolio website built with Next.js and deployed on DigitalOcean with full CI/CD automation.
 
-First, run the development server:
+## 🚀 Features
+
+- **Modern Stack**: Next.js 15 with TypeScript and Tailwind CSS
+- **Automated Deployment**: GitHub Actions CI/CD pipeline
+- **Production Ready**: Nginx reverse proxy with SSL/TLS
+- **Monitoring**: Health checks and system monitoring
+- **Backup System**: Automated daily backups
+- **Security**: Firewall, fail2ban, and security headers
+- **Docker Support**: Container deployment option
+- **Infrastructure as Code**: Ansible automation
+
+## 🔗 Live Site
+
+Visit the live portfolio at: [https://kesaru.me](https://kesaru.me)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS 4
+- **Deployment**: DigitalOcean Droplet, Nginx, PM2
+- **CI/CD**: GitHub Actions
+- **SSL**: Let's Encrypt with Certbot
+- **Monitoring**: Custom health checks and system monitoring
+- **Automation**: Ansible for server setup
+- **Containerization**: Docker and Docker Compose
+
+## 📚 Documentation
+
+- **[Deployment Guide](DEPLOYMENT.md)** - Complete setup and deployment instructions
+- **[API Documentation](app/api/health/route.ts)** - Health check endpoint details
+
+## 🚀 Quick Start
+
+### Local Development
 
 ```bash
+# Clone the repository
+git clone https://github.com/your-username/kesaru.me.git
+cd kesaru.me
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment instructions.
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+kesaru.me/
+├── app/                    # Next.js app directory
+├── ansible/               # Server automation
+├── nginx/                 # Web server configuration
+├── scripts/               # Monitoring and backup scripts
+├── .github/workflows/     # CI/CD pipelines
+└── docs/                  # Documentation
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔧 Configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Environment Variables
 
-## Deploy on Vercel
+```env
+NODE_ENV=production
+PORT=3000
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### GitHub Secrets Required
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `DROPLET_HOST` - DigitalOcean droplet IP
+- `DROPLET_USER` - SSH username
+- `DROPLET_SSH_KEY` - SSH private key
+
+## 📊 Monitoring
+
+The application includes comprehensive monitoring:
+
+- **Health Check**: `/api/health` endpoint
+- **System Monitoring**: CPU, memory, disk usage
+- **SSL Monitoring**: Certificate expiry tracking
+- **Application Monitoring**: PM2 process management
+
+## 🔐 Security
+
+- UFW firewall configuration
+- Fail2ban SSH protection
+- SSL/TLS with strong ciphers
+- Security headers (XSS, CSRF protection)
+- Regular automated updates
+
+## 🔄 CI/CD Pipeline
+
+Automated deployment triggered on push to main:
+
+1. Build Next.js application
+2. Run tests
+3. Deploy to DigitalOcean droplet
+4. Health checks and rollback on failure
+
+## 📈 Performance
+
+- Optimized Next.js build
+- Nginx with gzip compression
+- HTTP/2 with SSL
+- Static asset caching
+- Docker container optimization
+
+## 🆘 Support
+
+For issues or questions:
+- Check [DEPLOYMENT.md](DEPLOYMENT.md) troubleshooting section
+- Open a GitHub issue
+- Contact: hello@kesaru.me
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Built with ❤️ by Kesaru**

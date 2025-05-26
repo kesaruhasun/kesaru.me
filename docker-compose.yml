@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  kesaru-app:
+    build: .
+    container_name: kesaru-portfolio
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - app-logs:/app/logs
+    networks:
+      - kesaru-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: kesaru-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/kesaru.me.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/log/nginx:/var/log/nginx
+    depends_on:
+      - kesaru-app
+    networks:
+      - kesaru-network
+
+volumes:
+  app-logs:
+
+networks:
+  kesaru-network:
+    driver: bridge

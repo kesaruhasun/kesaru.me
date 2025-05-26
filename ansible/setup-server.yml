@@ -1,0 +1,265 @@
+---
+- name: Setup DigitalOcean Droplet for kesaru.me
+  hosts: droplet
+  become: yes
+  vars:
+    domain_name: kesaru.me
+    app_user: kesaru
+    app_directory: /var/www/kesaru.me
+    node_version: "20"
+
+  tasks:
+    - name: Update and upgrade system packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+        cache_valid_time: 3600
+
+    - name: Install essential packages
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - ufw
+          - fail2ban
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+          - htop
+          - vim
+          - unzip
+        state: present
+
+    - name: Create application user
+      user:
+        name: "{{ app_user }}"
+        shell: /bin/bash
+        home: "/home/{{ app_user }}"
+        create_home: yes
+        groups: sudo
+        append: yes
+
+    - name: Add SSH key for application user
+      authorized_key:
+        user: "{{ app_user }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        state: present
+
+    - name: Install Node.js via NodeSource
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_{{ node_version }}.x | sudo -E bash -
+        apt-get install -y nodejs
+      args:
+        creates: /usr/bin/node
+
+    - name: Install PM2 globally
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: Create application directory
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/kesaru/kesaru.me.git
+        dest: "{{ app_directory }}"
+        version: main
+        force: yes
+      become_user: "{{ app_user }}"
+
+    - name: Install Node.js dependencies
+      npm:
+        path: "{{ app_directory }}"
+      become_user: "{{ app_user }}"
+
+    - name: Build Next.js application
+      command: npm run build
+      args:
+        chdir: "{{ app_directory }}"
+      become_user: "{{ app_user }}"
+
+    - name: Configure UFW firewall
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - "22"    # SSH
+        - "80"    # HTTP
+        - "443"   # HTTPS
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+
+    - name: Configure fail2ban for SSH
+      copy:
+        content: |
+          [sshd]
+          enabled = true
+          port = 22
+          filter = sshd
+          logpath = /var/log/auth.log
+          maxretry = 3
+          bantime = 3600
+        dest: /etc/fail2ban/jail.local
+        backup: yes
+      notify: restart fail2ban
+
+    - name: Copy Nginx configuration
+      copy:
+        src: ../nginx/kesaru.me.conf
+        dest: /etc/nginx/sites-available/{{ domain_name }}
+        backup: yes
+      notify: reload nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/{{ domain_name }}
+        dest: /etc/nginx/sites-enabled/{{ domain_name }}
+        state: link
+      notify: reload nginx
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: reload nginx
+
+    - name: Test Nginx configuration
+      command: nginx -t
+      register: nginx_test
+      failed_when: nginx_test.rc != 0
+
+    - name: Obtain SSL certificate with Certbot
+      command: >
+        certbot --nginx
+        --non-interactive
+        --agree-tos
+        --email hello@{{ domain_name }}
+        --domains {{ domain_name }},www.{{ domain_name }}
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
+
+    - name: Setup SSL certificate auto-renewal
+      cron:
+        name: "Certbot auto-renewal"
+        minute: "0"
+        hour: "12"
+        job: "/usr/bin/certbot renew --quiet && systemctl reload nginx"
+
+    - name: Create PM2 startup script
+      command: pm2 startup systemd -u {{ app_user }} --hp /home/{{ app_user }}
+      register: pm2_startup
+      become_user: "{{ app_user }}"
+
+    - name: Execute PM2 startup command
+      shell: "{{ pm2_startup.stdout_lines[-1] }}"
+      when: pm2_startup.stdout_lines is defined and pm2_startup.stdout_lines|length > 0
+
+    - name: Start application with PM2
+      command: pm2 start {{ app_directory }}/ecosystem.config.json
+      become_user: "{{ app_user }}"
+      args:
+        chdir: "{{ app_directory }}"
+
+    - name: Save PM2 process list
+      command: pm2 save
+      become_user: "{{ app_user }}"
+
+    - name: Create log directories
+      file:
+        path: /var/log/pm2
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Create scripts directory
+      file:
+        path: /opt/kesaru
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy monitoring script
+      copy:
+        src: ../scripts/monitor.sh
+        dest: /opt/kesaru/monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy backup script
+      copy:
+        src: ../scripts/backup.sh
+        dest: /opt/kesaru/backup.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Setup monitoring cron job
+      cron:
+        name: "System monitoring"
+        minute: "*/5"
+        job: "/opt/kesaru/monitor.sh"
+        user: root
+
+    - name: Setup backup cron job
+      cron:
+        name: "Daily backup"
+        minute: "0"
+        hour: "2"
+        job: "/opt/kesaru/backup.sh"
+        user: root
+
+    - name: Create backup directory
+      file:
+        path: /var/backups/kesaru.me
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Install Docker (optional)
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+      tags: docker
+
+    - name: Add user to docker group
+      user:
+        name: "{{ app_user }}"
+        groups: docker
+        append: yes
+      tags: docker
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      tags: docker
+
+  handlers:
+    - name: restart fail2ban
+      systemd:
+        name: fail2ban
+        state: restarted
+        enabled: yes
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
+        enabled: yes

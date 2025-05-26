@@ -1,0 +1,97 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests (if available)
+        run: npm test --if-present
+
+      - name: Deploy to DigitalOcean
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: 22
+          script: |
+            # Create backup of current deployment
+            if [ -d "/var/www/kesaru.me" ]; then
+              sudo cp -r /var/www/kesaru.me /var/www/kesaru.me.backup.$(date +%Y%m%d_%H%M%S)
+            fi
+
+            # Navigate to the application directory
+            cd /var/www/kesaru.me
+
+            # Pull latest changes
+            git pull origin main
+
+            # Install dependencies
+            npm ci --only=production
+
+            # Build the application
+            npm run build
+
+            # Set proper permissions
+            sudo chown -R kesaru:kesaru /var/www/kesaru.me
+            sudo chmod -R 755 /var/www/kesaru.me
+
+            # Test the build
+            if [ ! -d ".next" ]; then
+              echo "Build failed - .next directory not found"
+              exit 1
+            fi
+
+            # Restart the application using PM2
+            pm2 restart kesaru-portfolio || pm2 start ecosystem.config.json
+
+            # Test if application is running
+            sleep 5
+            if ! pm2 list | grep -q "kesaru-portfolio.*online"; then
+              echo "Application failed to start"
+              exit 1
+            fi
+
+            # Test local response
+            if ! curl -f http://localhost:3000 > /dev/null 2>&1; then
+              echo "Application not responding on port 3000"
+              exit 1
+            fi
+
+            # Reload Nginx to ensure proper routing
+            sudo nginx -t && sudo systemctl reload nginx
+
+            # Clean up old backups (keep last 5)
+            sudo find /var/www -name "kesaru.me.backup.*" -type d | head -n -5 | xargs sudo rm -rf
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+          fi
