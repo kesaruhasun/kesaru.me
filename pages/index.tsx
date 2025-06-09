@@ -48,7 +48,7 @@ const Home: NextPage = () => {
       setTerminalOutput([
         { 
           response: [
-            { type: 'text', content: 'Welcome to Kesaru Terminal v1.0.2' },
+            { type: 'text', content: 'Welcome to Kesaru Terminal v1.0.3' },
             { type: 'text', content: 'Type "help" for available commands.' }
           ] 
         }
