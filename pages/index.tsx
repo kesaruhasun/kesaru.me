@@ -1,76 +1,242 @@
 import type { NextPage } from 'next';
+import { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import Head from 'next/head';
 import Layout from '../components/layout/Layout';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+// Terminal command response types
+type CommandResponse = {
+  type: 'text' | 'link' | 'error' | 'html';
+  content: string | React.ReactNode;
+};
+
+const TypedText = ({ text, typingSpeed = 50, onComplete }: { text: string, typingSpeed?: number, onComplete?: () => void }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      }, typingSpeed);
+      
+      return () => clearTimeout(timer);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }, [currentIndex, text, typingSpeed, onComplete]);
+  
+  return <span>{displayText}<span className="animate-pulse">▊</span></span>;
+};
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const [initialized, setInitialized] = useState(false);
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [commandIndex, setCommandIndex] = useState(-1);
+  const [currentInput, setCurrentInput] = useState('');
+  const [terminalOutput, setTerminalOutput] = useState<Array<{command?: string, response: CommandResponse[]}>>([]);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
+  const outputEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize terminal with welcome message
+  useEffect(() => {
+    if (!initialized) {
+      setTerminalOutput([
+        { 
+          response: [
+            { type: 'text', content: 'Welcome to Kesaru Terminal v1.0.0' },
+            { type: 'text', content: 'Type "help" for available commands.' }
+          ] 
+        }
+      ]);
+      setInitialized(true);
+    }
+  }, [initialized]);
+
+  // Scroll to bottom when output changes
+  useEffect(() => {
+    outputEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [terminalOutput]);
+
+  // Focus input on mount and clicks
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  // Handle terminal commands
+  const processCommand = (cmd: string): CommandResponse[] => {
+    const command = cmd.trim().toLowerCase();
+    
+    // Basic command parsing
+    if (command === 'help') {
+      return [
+        { type: 'text', content: 'Available commands:' },
+        { type: 'text', content: '  help - Show this help message' },
+        { type: 'text', content: '  about - Show information about me' },
+        { type: 'text', content: '  blog - View my blog posts' },
+        { type: 'text', content: '  contact - Get in touch with me' },
+        { type: 'text', content: '  clear - Clear the terminal' },
+        { type: 'text', content: '  ls - List available sections' }
+      ];
+    } 
+    else if (command === 'about' || command === 'cd about') {
+      // You could navigate to about page or show info inline
+      setTimeout(() => router.push('/about'), 500);
+      return [{ type: 'text', content: 'Navigating to about page...' }];
+    }
+    else if (command === 'blog' || command === 'cd blog') {
+      setTimeout(() => router.push('/blog'), 500);
+      return [{ type: 'text', content: 'Navigating to blog page...' }];
+    }
+    else if (command === 'contact' || command === 'cd contact') {
+      setTimeout(() => router.push('/contact'), 500);
+      return [{ type: 'text', content: 'Navigating to contact page...' }];
+    }
+    else if (command === 'clear') {
+      setTerminalOutput([]);
+      return [];
+    }
+    else if (command === 'ls') {
+      return [
+        { type: 'text', content: 'Directories:' },
+        { 
+          type: 'html', 
+          content: (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 pl-4">
+              <div className="flex">
+                <span className="text-terminal-blue mr-4">drwxr-xr-x</span>
+                <Link href="/blog" className="text-terminal-white hover:text-terminal-brightGreen">
+                  blog/ <span className="text-terminal-gray">(chronicles)</span>
+                </Link>
+              </div>
+              <div className="flex">
+                <span className="text-terminal-blue mr-4">drwxr-xr-x</span>
+                <Link href="/about" className="text-terminal-white hover:text-terminal-brightGreen">
+                  about/ <span className="text-terminal-gray">(identity)</span>
+                </Link>
+              </div>
+              <div className="flex">
+                <span className="text-terminal-blue mr-4">drwxr-xr-x</span>
+                <Link href="/contact" className="text-terminal-white hover:text-terminal-brightGreen">
+                  contact/ <span className="text-terminal-gray">(message)</span>
+                </Link>
+              </div>
+            </div>
+          ) 
+        }
+      ];
+    }
+    else if (command === '') {
+      return [];
+    }
+    else {
+      return [{ type: 'error', content: `Command not found: ${command}. Type "help" for available commands.` }];
+    }
+  };
+
+  // Handle command submission
+  const handleCommandSubmit = () => {
+    if (currentInput.trim() === '') return;
+    
+    // Process command and update history
+    const response = processCommand(currentInput);
+    setTerminalOutput(prev => [...prev, { command: currentInput, response }]);
+    setCommandHistory(prev => [...prev, currentInput]);
+    setCommandIndex(-1);
+    setCurrentInput('');
+  };
+
+  // Handle keyboard events for command history and submission
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleCommandSubmit();
+    } 
+    else if (e.key === 'ArrowUp') {
+      // Navigate command history (older commands)
+      e.preventDefault();
+      if (commandHistory.length > 0) {
+        const newIndex = commandIndex < commandHistory.length - 1 ? commandIndex + 1 : commandIndex;
+        setCommandIndex(newIndex);
+        setCurrentInput(commandHistory[commandHistory.length - 1 - newIndex] || '');
+      }
+    } 
+    else if (e.key === 'ArrowDown') {
+      // Navigate command history (newer commands)
+      e.preventDefault();
+      if (commandIndex > 0) {
+        const newIndex = commandIndex - 1;
+        setCommandIndex(newIndex);
+        setCurrentInput(commandHistory[commandHistory.length - 1 - newIndex] || '');
+      } else {
+        setCommandIndex(-1);
+        setCurrentInput('');
+      }
+    }
+  };
+
+  // Handle clicks on terminal to focus input
+  const handleTerminalClick = () => {
+    inputRef.current?.focus();
+  };
+
   return (
     <Layout>
       <Head>
-        <title>Kesaru | Personal Blog & Digital Universe</title>
+        <title>Kesaru | Terminal</title>
         <meta name="description" content="Welcome to Kesaru's digital universe - a personal blog sharing insights, projects, and creative explorations." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">Welcome to Kesaru's Universe</h1>
-        <p className="text-xl md:text-2xl text-gray-600 max-w-2xl">
-          Exploring ideas, sharing knowledge, and building a digital space for curiosity and creativity.
-        </p>
-        <div className="mt-8">
-          <Link href="/blog" 
-                className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">
-            Read the Blog
-          </Link>
-        </div>
-      </section>
-
-      {/* Latest Posts Section */}
-      <section className="py-12 border-t">
-        <h2 className="text-3xl font-bold mb-8">Latest Chronicles</h2>
-        
-        {/* This will be replaced with dynamic content later */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3].map((post) => (
-            <div key={post} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-48 bg-gray-200"></div>
-              <div className="p-6">
-                <span className="text-sm text-gray-500">June 8, 2025</span>
-                <h3 className="text-xl font-semibold mt-2 mb-3">Sample Blog Post {post}</h3>
-                <p className="text-gray-600">This is a placeholder for your amazing blog content that will appear here once connected to your CMS.</p>
-                <Link href="/blog/post-slug" 
-                      className="inline-block mt-4 text-blue-600 hover:underline">
-                  Continue reading →
-                </Link>
-              </div>
+      <div 
+        className="max-w-3xl mx-auto mt-8 pb-20 min-h-[60vh]" 
+        onClick={handleTerminalClick}
+      >
+        {/* Terminal output */}
+        <div className="mb-4">
+          {terminalOutput.map((entry, i) => (
+            <div key={i} className="mb-3">
+              {/* Show the command that was entered */}
+              {entry.command && (
+                <div className="pb-1">
+                  <span className="text-terminal-white">kesaru@terminal</span>
+                  <span className="text-terminal-gray">:~$ </span>
+                  <span>{entry.command}</span>
+                </div>
+              )}
+              
+              {/* Show the command response */}
+              {entry.response.map((res, j) => (
+                <div key={j} className={`pl-0 ${res.type === 'error' ? 'text-terminal-red' : ''}`}>
+                  {res.type === 'html' ? res.content : <div>{res.content}</div>}
+                </div>
+              ))}
             </div>
           ))}
         </div>
-      </section>
 
-      {/* Newsletter Section */}
-      <section className="py-12 border-t">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Subscribe to the Newsletter</h2>
-          <p className="text-gray-600 mb-6">Get the latest posts and updates delivered directly to your inbox.</p>
-          
-          <form className="flex flex-col md:flex-row gap-3">
-            <input 
-              type="email" 
-              placeholder="Your email address" 
-              className="flex-grow px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <button 
-              type="submit" 
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
+        {/* Command input */}
+        <div className="flex items-center">
+          <span className="text-terminal-white">kesaru@terminal</span>
+          <span className="text-terminal-gray">:~$ </span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={currentInput}
+            onChange={(e) => setCurrentInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-grow bg-transparent border-none outline-none text-terminal-green pl-1"
+            autoFocus
+            aria-label="Terminal input"
+          />
         </div>
-      </section>
+        
+        {/* Invisible element to scroll to */}
+        <div ref={outputEndRef} />
+      </div>
     </Layout>
   );
 };

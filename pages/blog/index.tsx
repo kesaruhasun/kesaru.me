@@ -1,89 +1,183 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import React, { useState } from 'react';
 import Layout from '../../components/layout/Layout';
 import Link from 'next/link';
+import Image from 'next/image';
 
-const BlogPage: NextPage = () => {
-  // This will be replaced with actual data from your CMS later
-  const blogPosts = [
-    {
-      id: 1,
-      slug: 'getting-started-with-nextjs',
-      title: 'Getting Started with Next.js',
-      excerpt: 'Learn how to build modern websites with Next.js, React, and more.',
-      date: 'June 1, 2025',
-      category: 'Technology'
-    },
-    {
-      id: 2,
-      slug: 'designing-for-mobile-first',
-      title: 'Designing for Mobile-First Experiences',
-      excerpt: 'Best practices for creating responsive, mobile-first web experiences.',
-      date: 'June 5, 2025',
-      category: 'Design'
-    },
-    {
-      id: 3,
-      slug: 'content-strategy-for-developers',
-      title: 'Content Strategy for Developers',
-      excerpt: 'How to think about content structure when building websites and applications.',
-      date: 'June 8, 2025',
-      category: 'Content'
-    },
-    // More placeholder posts can be added here
-  ];
+// Sample blog posts data (this would come from your CMS later)
+const allPosts = [
+  {
+    id: 1,
+    title: 'Getting Started with Next.js and Tailwind CSS',
+    excerpt: 'Learn how to set up a new project with Next.js and Tailwind CSS to create beautiful, responsive websites.',
+    date: 'June 5, 2025',
+    category: 'Web Development',
+    slug: 'getting-started-with-nextjs-and-tailwind',
+    imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 2, 
+    title: 'The Future of Personal Websites',
+    excerpt: 'Exploring how personal websites are evolving and why having your own digital space matters more than ever.',
+    date: 'June 1, 2025',
+    category: 'Digital Identity',
+    slug: 'the-future-of-personal-websites',
+    imageUrl: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 3,
+    title: 'Creating an Efficient Content Workflow',
+    excerpt: 'How to create a sustainable content creation workflow that keeps your blog active and engaging.',
+    date: 'May 28, 2025',
+    category: 'Content Strategy',
+    slug: 'creating-an-efficient-content-workflow',
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 4,
+    title: 'The Importance of Performance in Web Design',
+    excerpt: 'Why website performance matters and how it affects user experience and SEO rankings.',
+    date: 'May 20, 2025',
+    category: 'Web Development',
+    slug: 'importance-of-performance-in-web-design',
+    imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 5,
+    title: 'Building a Personal Brand Online',
+    excerpt: 'How to craft and maintain a consistent personal brand across various online platforms.',
+    date: 'May 15, 2025',
+    category: 'Digital Identity',
+    slug: 'building-a-personal-brand-online',
+    imageUrl: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 6,
+    title: 'SEO Best Practices for Blogs in 2025',
+    excerpt: 'The latest search engine optimization techniques to help your blog content rank higher.',
+    date: 'May 10, 2025',
+    category: 'Content Strategy',
+    slug: 'seo-best-practices-for-blogs',
+    imageUrl: 'https://images.unsplash.com/photo-1432888622747-4eb9a8f5f989?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  }
+];
+
+// Get all unique categories
+const categories = ['All', ...new Set(allPosts.map(post => post.category))];
+
+const BlogPage: React.FC = () => {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Filter posts by category and search term
+  const filteredPosts = allPosts.filter(post => {
+    const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <Layout>
-      <Head>
-        <title>Blog | Kesaru's Chronicles</title>
-        <meta name="description" content="Read the latest articles and insights from Kesaru's digital universe." />
-      </Head>
+    <Layout title="Blog | Kesaru.me">
+      <div className="max-w-5xl mx-auto">
+        <header className="mb-12 text-center">
+          <h1 className="text-4xl font-bold mb-4">Chronicles</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Thoughts, stories, and ideas about technology, personal development, and beyond.
+          </p>
+        </header>
 
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">Chronicles</h1>
-        <p className="text-xl text-gray-600 mb-12">
-          Thoughts, insights, and explorations from my digital journey.
-        </p>
+        {/* Search and Filter */}
+        <div className="mb-12">
+          <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
+            {/* Search */}
+            <div className="relative w-full md:w-72">
+              <input
+                type="text"
+                placeholder="Search posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 pl-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <svg
+                className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </div>
 
-        {/* Category Filter - Simple version for now */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <span className="font-medium text-gray-700">Categories:</span>
-          <button className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">All</button>
-          <button className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">Technology</button>
-          <button className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">Design</button>
-          <button className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">Content</button>
+            {/* Categories */}
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeCategory === category
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Blog Post List */}
-        <div className="space-y-12">
-          {blogPosts.map(post => (
-            <article key={post.id} className="border-b pb-10">
-              <div className="mb-2">
-                <span className="text-sm text-blue-600">{post.category}</span>
-                <span className="text-sm text-gray-500 mx-2">•</span>
-                <span className="text-sm text-gray-500">{post.date}</span>
-              </div>
-              <Link href={`/blog/${post.slug}`}>
-                <h2 className="text-2xl font-bold mb-3 hover:text-blue-600">{post.title}</h2>
+        {/* Blog Posts Grid */}
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <Link 
+                href={`/blog/${post.slug}`} 
+                key={post.id}
+                className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={post.imageUrl}
+                    alt={post.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-6">
+                  <span className="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+                    {post.category}
+                  </span>
+                  <h3 className="mt-2 text-xl font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-200">
+                    {post.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                  <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+                    {post.date}
+                  </p>
+                </div>
               </Link>
-              <p className="text-gray-600 mb-4">{post.excerpt}</p>
-              <Link href={`/blog/${post.slug}`} className="text-blue-600 hover:underline">
-                Read more →
-              </Link>
-            </article>
-          ))}
-        </div>
-
-        {/* Pagination - Simple version */}
-        <div className="mt-12 flex justify-between">
-          <button className="px-4 py-2 border rounded-md text-gray-500 hover:bg-gray-50" disabled>
-            ← Previous
-          </button>
-          <button className="px-4 py-2 border rounded-md text-gray-800 hover:bg-gray-50">
-            Next →
-          </button>
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600 dark:text-gray-400">No posts found matching your criteria.</p>
+            <button 
+              onClick={() => {setActiveCategory('All'); setSearchTerm('');}}
+              className="mt-4 px-4 py-2 text-purple-600 border border-purple-300 dark:border-purple-700 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20"
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
       </div>
     </Layout>
   );
