@@ -77,7 +77,7 @@ const BlogPage: React.FC = () => {
   });
 
   return (
-    <Layout title="Blog | Kesaru.me">
+    <Layout>
       <div className="max-w-5xl mx-auto">
         <header className="mb-12 text-center">
           <h1 className="text-4xl font-bold mb-4">Chronicles</h1>

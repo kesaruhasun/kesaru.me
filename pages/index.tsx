@@ -11,26 +11,6 @@ type CommandResponse = {
   content: string | React.ReactNode;
 };
 
-const TypedText = ({ text, typingSpeed = 50, onComplete }: { text: string, typingSpeed?: number, onComplete?: () => void }) => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timer = setTimeout(() => {
-        setDisplayText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prevIndex => prevIndex + 1);
-      }, typingSpeed);
-      
-      return () => clearTimeout(timer);
-    } else if (onComplete) {
-      onComplete();
-    }
-  }, [currentIndex, text, typingSpeed, onComplete]);
-  
-  return <span>{displayText}<span className="animate-pulse">▊</span></span>;
-};
-
 const Home: NextPage = () => {
   const router = useRouter();
   const [initialized, setInitialized] = useState(false);

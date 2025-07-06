@@ -14,7 +14,7 @@ const ContactPage = () => {
   const [status, setStatus] = useState({
     submitted: false,
     submitting: false,
-    info: { error: false, msg: null }
+    info: { error: false, msg: null as string | null }
   });
   
   // Handle form input changes
@@ -63,7 +63,7 @@ const ContactPage = () => {
           });
         }, 5000);
       }, 1500);
-    } catch (error) {
+    } catch {
       setStatus({
         submitted: false,
         submitting: false,
@@ -73,12 +73,12 @@ const ContactPage = () => {
   };
   
   return (
-    <Layout title="Contact | Kesaru.me" description="Get in touch with Kesaru for collaborations, inquiries, or just to say hello.">
+    <Layout>
       <section className="bg-indigo-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-4xl font-bold tracking-tight mb-4">Get in Touch</h1>
           <p className="text-lg max-w-2xl opacity-90">
-            Have a question, proposal, or just want to say hi? I'd love to hear from you.
+            Have a question, proposal, or just want to say hi? I&apos;d love to hear from you.
           </p>
         </div>
       </section>
@@ -306,7 +306,7 @@ const ContactPage = () => {
                 </span>
               </summary>
               <div className="mt-4 text-gray-600">
-                <p>I typically respond to all inquiries within 24-48 hours during business days. For urgent matters, please indicate this in your message subject, and I'll prioritize your request.</p>
+                <p>I typically respond to all inquiries within 24-48 hours during business days. For urgent matters, please indicate this in your message subject, and I&apos;ll prioritize your request.</p>
               </div>
             </details>
             
@@ -320,7 +320,7 @@ const ContactPage = () => {
                 </span>
               </summary>
               <div className="mt-4 text-gray-600">
-                <p>Yes, I'm available for freelance projects depending on my current schedule and the scope of work. I prefer projects that align with my expertise and interests, and I'm particularly interested in working with startups and organizations focused on social impact.</p>
+                <p>Yes, I&apos;m available for freelance projects depending on my current schedule and the scope of work. I prefer projects that align with my expertise and interests, and I&apos;m particularly interested in working with startups and organizations focused on social impact.</p>
               </div>
             </details>
           </div>

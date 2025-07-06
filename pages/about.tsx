@@ -27,11 +27,11 @@ const AboutPage: NextPage = () => {
             
             <div className="mb-6 pl-2 border-l-2 border-terminal-blue">
               <p className="mb-3">
-                I'm a developer and tech enthusiast based in Sri Lanka. This terminal is my 
+                I&apos;m a developer and tech enthusiast based in Sri Lanka. This terminal is my 
                 digital space where I share my thoughts, projects, and experiences.
               </p>
               <p>
-                With a background in software engineering, I've developed a passion for 
+                With a background in software engineering, I&apos;ve developed a passion for 
                 creating clean, efficient solutions to complex problems.
               </p>
             </div>
@@ -64,7 +64,7 @@ const AboutPage: NextPage = () => {
           
           {/* Journey Section - UPDATE WITH YOUR TIMELINE */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold mb-3 text-terminal-yellow">$ git log --author="Kesaru"</h2>
+            <h2 className="text-xl font-bold mb-3 text-terminal-yellow">$ git log --author=&quot;Kesaru&quot;</h2>
             
             <div className="space-y-5 pl-4">
               <div className="border-l-2 border-terminal-purple pl-4 pb-1">
@@ -89,7 +89,7 @@ const AboutPage: NextPage = () => {
           
           {/* Interests Section - ADD YOUR PERSONAL INTERESTS */}
           <div>
-            <h2 className="text-xl font-bold mb-3 text-terminal-yellow">$ grep -i "interests" ~/profile</h2>
+            <h2 className="text-xl font-bold mb-3 text-terminal-yellow">$ grep -i &quot;interests&quot; ~/profile</h2>
             <div className="pl-4">
               <p className="mb-2">When not coding, I enjoy:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
