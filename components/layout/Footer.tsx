@@ -10,7 +10,7 @@ export default function Footer() {
             <span className="text-terminal-green">kesaru@terminal</span>
             <span>:~$ </span>
             <span className="text-terminal-white">echo </span>
-            <span>"© {new Date().getFullYear()} Kesaru. All rights reserved."</span>
+            <span>&quot;© {new Date().getFullYear()} Kesaru. All rights reserved.&quot;</span>
           </div>
           
           <div className="space-x-4">

@@ -65,7 +65,7 @@ const BlogPostPage: React.FC = () => {
   // Handle loading and not found states
   if (router.isFallback) {
     return (
-      <Layout title="Loading...">
+      <Layout>
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
         </div>
@@ -75,11 +75,11 @@ const BlogPostPage: React.FC = () => {
   
   if (!post) {
     return (
-      <Layout title="Post Not Found">
+      <Layout>
         <div className="text-center py-16">
           <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            The blog post you're looking for doesn't exist or has been removed.
+            The blog post you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <Link 
             href="/blog" 
@@ -93,7 +93,7 @@ const BlogPostPage: React.FC = () => {
   }
   
   return (
-    <Layout title={`${post.title} | Kesaru.me Blog`}>
+    <Layout>
       <article className="max-w-4xl mx-auto">
         {/* Post Header */}
         <header className="mb-8">
